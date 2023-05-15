@@ -1,0 +1,28 @@
+---
+ - hosts: all
+   become: yes
+   tasks:
+    - name: Install httpd on all app servers
+      package:
+        name: httpd
+        state: present
+
+    - name: Start a service
+      service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Create a file using blockinfile
+      blockinfile:
+        create: yes
+        path: /var/www/html/index.html
+        owner: apache
+        group: apache
+        mode: 0744
+        block: |
+          Welcome to XfusionCorp!
+          This is Nautilus sample file, created using Ansible!
+          Please do not modify this file manually!
+      
+

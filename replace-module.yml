@@ -1,0 +1,26 @@
+---
+- name: Example of replace module in Ansible
+  hosts: all
+  become: yes
+  vars:
+    host_info:
+      - hostname: stapp01
+        file_path: /opt/finance/blog.txt
+        regexp: "xFusionCorp"
+        replace: "Nautilus"
+      - hostname: stapp02
+        file_path: /opt/finance/story.txt
+        regexp: "Nautilus"
+        replace: "KodeKloud"
+      - hostname: stapp03
+        file_path: /opt/finance/media.txt
+        regexp: "KodeKloud"
+        replace: "xFusionCorp Industries"
+  tasks:
+    - name: Replace a string
+      ansible.builtin.replace:
+        path: "{{item.file_path}}"
+        regexp: "{{item.regexp}}"
+        replace: "{{item.replace}}"
+      loop: "{{host_info}}"
+      when: inventory_hostname == item.hostname

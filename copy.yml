@@ -1,0 +1,11 @@
+---
+ - hosts: all
+   become: yes
+   tasks:
+    - name: Copy file all servers
+      copy:
+        src: /usr/src/dba/index.html
+        dest: /opt/dba/
+        owner: "{{ansible_user}}"
+        group: "{{ansible_user}}"
+        mode: 0644

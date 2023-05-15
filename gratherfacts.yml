@@ -1,0 +1,25 @@
+---
+ - hosts: stapp01
+   become: yes
+   gather_facts: yes
+   tasks:
+    - name: Create a file using blockinfile
+      blockinfile:
+        create: yes
+        path: /root/facts.txt
+        block: |
+          Ansible managed node IP is {{ ansible_facts.default_ipv4.address }}
+
+    - name: Install httpd on all app servers
+      package:
+        name: httpd
+        state: present
+    
+    - name: Copy a file
+      shell cp /root/facts.txt /var/www/html/index.html
+
+    - name: Start a service
+      service:
+        name: httpd
+        state: started
+        enabled: yes

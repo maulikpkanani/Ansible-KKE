@@ -1,0 +1,28 @@
+---
+ - hosts: all
+   become: yes
+   tasks:
+    - name: Copy file to stapp01
+      copy:
+        src: /usr/src/dba/blog.txt
+        dest: /opt/dba/
+        owner: "{{ansible_user}}"
+        group: "{{ansible_user}}"
+        mode: 0644
+      when: ansible_nodename == 'stapp01.stratos.xfusioncorp.com'
+    - name: Copy file to stapp02
+      copy:
+        src: /usr/src/dba/story.txt
+        dest: /opt/dba/
+        owner: "{{ansible_user}}"
+        group: "{{ansible_user}}"
+        mode: 0644
+      when: ansible_nodename == 'stapp02.stratos.xfusioncorp.com'
+    - name: Copy file to stapp03
+      copy:
+        src: /usr/src/dba/media.txt
+        dest: /opt/dba/
+        owner: "{{ansible_user}}"
+        group: "{{ansible_user}}"
+        mode: 0644
+      when: ansible_nodename == 'stapp03.stratos.xfusioncorp.com'

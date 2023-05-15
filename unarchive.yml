@@ -1,0 +1,11 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: null
+      unarchive:
+        path: /usr/src/finance/devops.zip
+        dest: /opt/finance
+        owner: "{{ansible_user}}"
+        group: "{{ansible_user}}"
+        mode: 0755

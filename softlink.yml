@@ -1,0 +1,50 @@
+- name: Create empty file and symbolic link
+  hosts: all
+  become: true
+  vars:
+    host_info:
+      - hostname: stapp01
+        file_path: /opt/sysops/blog.txt
+        owner: tony
+        group: tony
+      - hostname: stapp02
+        file_path: /opt/sysops/story.txt
+        owner: steve
+        group: steve
+      - hostname: stapp03
+        file_path: /opt/sysops/media.txt
+        owner: banner
+        group: banner
+'''
+The dictionary format of the above code can be represented as:
+vars:
+  host_info:
+    - { hostname: stapp01, file_path: /opt/sysops/blog.txt, owner: tony, group: tony }
+    - { hostname: stapp02, file_path: /opt/sysops/story.txt, owner: steve, group: steve }
+    - { hostname: stapp03, file_path: /opt/sysops/media.txt, owner: banner, group: banner }
+'''
+  tasks:
+    - name: Create empty file and symbolic link
+      block:
+        - name: Create empty file
+          file:
+            path: "{{ item.file_path }}"
+            state: touch 
+            owner: "{{ item.owner }}"
+            group: "{{ item.group }}"
+          when: inventory_hostname == item.hostname
+
+        - name: Create symbolic link
+          file:
+            src: /opt/sysops
+            dest: /var/www/html
+            owner: "{{ item.owner }}"
+            group: "{{ item.group }}"
+            state: link
+          when: inventory_hostname == item.hostname
+      loop: "{{ host_info }}"
+'''
+The block construct in Ansible is used to group related tasks together and execute them as a single unit. In the above code, we are using the block to create two tasks - "Create empty file" and "Create symbolic link" - and looping over these tasks for each element in the "host_info" variable list.
+The "when" clause for each task specifies the condition for execution - the task will only run if the current host's inventory hostname (inventory_hostname) matches the hostname specified in the "host_info" list. The file path, owner, and group for each host are also being set using variables from the "host_info" list.
+This way, we are able to create a file and a symbolic link for each host, without having to repeat the same code for each host. By using a block, we can make the code more readable and maintainable.
+'''

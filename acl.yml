@@ -1,0 +1,36 @@
+---
+- hosts: all
+  become: yes
+  vars:
+    host_info:
+      - hostname: stapp01
+        path: /opt/itadmin/blog.txt
+        entity: tony
+        etype: group
+        permissions: r
+      - hostname: stapp02
+        path: /opt/itadmin/story.txt
+        entity: steve
+        etype: user
+        permissions: rw
+      - hostname: stapp03
+        path: /opt/itadmin/media.txt
+        entity: banner
+        etype: group
+        permissions: rw
+  tasks:
+    - name: Create an empty file
+      ansible.builtin.file:
+        path: "{{item.path}}"
+        state: touch
+      loop: "{{host_info}}"
+      when: inventory_hostname == item.hostname
+    - name: Set acl properties for the file
+      ansible.builtin.acl:
+        path: "{{item.path}}"
+        entity: "{{item.entity}}"
+        etype: "{{item.etype}}"
+        permissions: "{{item.permissions}}"
+        state: present
+      loop: "{{host_info}}"
+      when: inventory_hostname == item.hostname
